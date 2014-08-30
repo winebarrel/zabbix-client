@@ -65,7 +65,9 @@ class Zabbix::Client
 
       http.start do |h|
         headers = DEFAULT_HEADERS.merge(@client.options[:headers] || {})
-        response = h.post(@client.url.path, body, headers)
+        request = Net::HTTP::Post.new(@client.url.path, headers)
+        request.body = body
+        response = h.request(request)
         JSON.parse(response.body)
       end
     end
