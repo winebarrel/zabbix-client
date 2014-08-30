@@ -26,6 +26,11 @@ require 'zabbix/client'
 client = Zabbix::Client.new('http://localhost/zabbix/api_jsonrpc.php')
 client.user.login(user: 'Admin', password: 'zabbix')
 p client.apiinfo.version #=> "2.0.12"
+p client.template.getobjects(:host => ['Template OS Linux'])
+#=> [{"hostid"=>"10001",
+      "proxy_hostid"=>"0",
+      "host"=>"Template OS Linux",
+      ...
 ```
 
 ## Related links

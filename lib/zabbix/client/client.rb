@@ -8,19 +8,17 @@ class Zabbix::Client
     JSON_RPC_REQUEST_ID = 1
     LOGIN_METHOD = 'user.login'
 
-    def initialize(prefix, url, headers, http_hook)
+    def initialize(prefix, client)
       @prefix = prefix
-      @url = url
-      @headers = headers
-      @http_hook = http_hook
+      @client = client
     end
 
     def method_missing(method_name, *args, &block)
       validate_args(args)
 
-      method = "#{@prefix}.#{method_name}"
-      params = args[0] || []
-      options = args[1] || {}
+      method   = "#{@prefix}.#{method_name}"
+      params   = args[0] || []
+      options  = args[1] || {}
       response = query(method, params, options)
 
       if (error = response['error'])
@@ -31,7 +29,7 @@ class Zabbix::Client
       result = response['result']
 
       if method == LOGIN_METHOD
-        @auth = result
+        @client.auth = result
       end
 
       if block
@@ -51,20 +49,19 @@ class Zabbix::Client
         :id      => JSON_RPC_REQUEST_ID,
       }.merge(options)
 
-      body[:auth] = @auth if @auth
+      body[:auth] = @client.auth if @client.auth
       body = JSON.dump(body)
+      http = Net::HTTP.new(@client.url.host, @client.url.port)
 
-      http = Net::HTTP.new(@url.host, @url.port)
-
-      if @url.scheme == 'https'
+      if @client.url.scheme == 'https'
         https.use_ssl = true
         https.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end
 
-      @http_hook.call(http) if @http_hook
+      @client.http_hook.call(http) if @client.http_hook
 
       http.start do |h|
-        response = h.post(@url.path, body, @headers)
+        response = h.post(@client.url.path, body, @client.headers)
         JSON.parse(response.body)
       end
     end
@@ -82,6 +79,11 @@ class Zabbix::Client
     end
   end # Method
 
+  attr_reader   :url
+  attr_reader   :headers
+  attr_reader   :http_hook
+  attr_accessor :auth
+
   def initialize(url, headers = {}, &http_hook)
     @url = URI.parse(url)
     @headers = DEFAULT_HEADERS.merge(headers)
@@ -89,6 +91,6 @@ class Zabbix::Client
   end
 
   def method_missing(method_name)
-    Zabbix::Client::Method.new(method_name, @url, @headers, @http_hook)
+    Zabbix::Client::Method.new(method_name, self)
   end
 end
