@@ -1,12 +1,12 @@
 class Zabbix::Client
-  DEFAULT_HEADERS = {
-    'Content-Type' => 'application/json-rpc'
-  }
-
   class Method
     JSON_RPC_VERSION = '2.0'
     JSON_RPC_REQUEST_ID = 1
     LOGIN_METHOD = 'user.login'
+
+    DEFAULT_HEADERS = {
+      'Content-Type' => 'application/json-rpc'
+    }
 
     def initialize(prefix, client)
       @prefix = prefix
@@ -22,7 +22,7 @@ class Zabbix::Client
       response = query(method, params, options)
 
       if (error = response['error'])
-        error = error.merge('method' => method, 'params' => params, 'options' => options)
+        error = error.merge('method' => method, 'params' => params)
         raise Zabbix::Client::Error.new(error)
       end
 
@@ -58,10 +58,9 @@ class Zabbix::Client
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end
 
-      @client.http_hook.call(http) if @client.http_hook
-
       http.start do |h|
-        response = h.post(@client.url.path, body, @client.headers)
+        headers = DEFAULT_HEADERS.merge(@client.options[:headers] || {})
+        response = h.post(@client.url.path, body, headers)
         JSON.parse(response.body)
       end
     end
@@ -80,14 +79,12 @@ class Zabbix::Client
   end # Method
 
   attr_reader   :url
-  attr_reader   :headers
-  attr_reader   :http_hook
+  attr_reader   :options
   attr_accessor :auth
 
-  def initialize(url, headers = {}, &http_hook)
+  def initialize(url, options = {})
     @url = URI.parse(url)
-    @headers = DEFAULT_HEADERS.merge(headers)
-    @http_hook = http_hook
+    @options = options
   end
 
   def method_missing(method_name)
