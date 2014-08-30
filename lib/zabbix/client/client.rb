@@ -54,8 +54,8 @@ class Zabbix::Client
       http = Net::HTTP.new(@client.url.host, @client.url.port)
 
       if @client.url.scheme == 'https'
-        https.use_ssl = true
-        https.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end
 
       @client.http_hook.call(http) if @client.http_hook
