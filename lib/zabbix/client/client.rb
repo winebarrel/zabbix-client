@@ -66,6 +66,8 @@ class Zabbix::Client
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end
 
+      http.set_debug_output($stderr) if @client.options[:debug]
+
       http.start do |h|
         headers = DEFAULT_HEADERS.merge(@client.options[:headers] || {})
         request = Net::HTTP::Post.new(@client.url.path, headers)
