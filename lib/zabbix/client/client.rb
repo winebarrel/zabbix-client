@@ -68,7 +68,7 @@ class Zabbix::Client
 
     def validate_args(args)
       unless (0..2).include?(args.length)
-        raise ArgumentError, "wrong number of arguments: #{args.inspect} (#{args.length} for 1..2)"
+        raise ArgumentError, "wrong number of arguments: #{args.inspect} (#{args.length} for 0..2)"
       end
 
       args.each do |arg|
