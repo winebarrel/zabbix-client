@@ -52,12 +52,14 @@ class Zabbix::Client
     private
 
     def query(method, params, options)
+      options = (@client.options || {}).merge(options)
+
       body = {
         :jsonrpc => JSON_RPC_VERSION,
         :method  => method,
         :params  => params,
         :id      => JSON_RPC_REQUEST_ID,
-      }.merge(options)
+      }.merge(options[:json_rpc_request] || {})
 
       if @client.auth and not UNAUTHENTICATED_METHODS.include?(method)
         body[:auth] = @client.auth
@@ -65,8 +67,8 @@ class Zabbix::Client
 
       body = JSON.dump(body)
 
-      proxy_user = @client.options[:proxy_user]
-      proxy_password = @client.options[:proxy_password]
+      proxy_user = options[:proxy_user]
+      proxy_password = options[:proxy_password]
       http = Net::HTTP.Proxy(proxy_user, proxy_password).new(@client.url.host, @client.url.port)
 
       if @client.url.scheme == 'https'
@@ -74,15 +76,15 @@ class Zabbix::Client
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       end
 
-      http.set_debug_output($stderr) if @client.options[:debug]
+      http.set_debug_output($stderr) if options[:debug]
 
       http.start do |h|
-        headers = DEFAULT_HEADERS.merge(@client.options[:headers] || {})
+        headers = DEFAULT_HEADERS.merge(options[:headers] || {})
         request = Net::HTTP::Post.new(@client.url.path, headers)
         request.body = body
 
-        basic_auth_user = @client.options[:basic_auth_user]
-        basic_auth_password = @client.options[:basic_auth_password]
+        basic_auth_user = options[:basic_auth_user]
+        basic_auth_password = options[:basic_auth_password]
 
         if basic_auth_user and basic_auth_password
           request.basic_auth(basic_auth_user, basic_auth_password)
