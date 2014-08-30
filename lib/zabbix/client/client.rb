@@ -67,7 +67,7 @@ class Zabbix::Client
 
       proxy_user = @client.options[:proxy_user]
       proxy_password = @client.options[:proxy_password]
-      http = Net::HTTP.Proxy(nil, nil).new(@client.url.host, @client.url.port)
+      http = Net::HTTP.Proxy(proxy_user, proxy_password).new(@client.url.host, @client.url.port)
 
       if @client.url.scheme == 'https'
         http.use_ssl = true
