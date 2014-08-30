@@ -28,10 +28,9 @@ client.user.login(user: 'Admin', password: 'zabbix')
 p client.apiinfo.version #=> "2.0.12"
 ```
 
-## Contributing
+## Related links
 
-1. Fork it ( https://github.com/winebarrel/zabbix-client/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+* [Zabbix 1.8 API reference](https://www.zabbix.com/documentation/1.8/api)
+* [Zabbix 2.0 API reference](https://www.zabbix.com/documentation/2.0/manual/appendix/api/api)
+* [Zabbix 2.2 API reference](https://www.zabbix.com/documentation/2.2/manual/api)
+* [Zabbix 2.4 API reference](https://www.zabbix.com/documentation/2.4/manual/api)
