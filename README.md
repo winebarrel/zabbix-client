@@ -39,6 +39,33 @@ p client.template.getobjects(host: ['Template OS Linux'])
 #     ...
 ```
 
+### Use proxy
+
+```ruby
+client = Zabbix::Client.new(
+  'http://localhost/zabbix/api_jsonrpc.php',
+  proxy_user: 'username', proxy_password: 'password'
+)
+```
+
+### Basic auth
+
+```ruby
+client = Zabbix::Client.new(
+  'http://localhost/zabbix/api_jsonrpc.php',
+  basic_auth_user: 'username', basic_auth_password: 'password'
+)
+```
+
+### Debug mode
+
+```ruby
+client = Zabbix::Client.new(
+  'http://localhost/zabbix/api_jsonrpc.php',
+  debug: true
+)
+```
+
 ## Related links
 
 * [Zabbix 1.8 API reference](https://www.zabbix.com/documentation/1.8/api)
