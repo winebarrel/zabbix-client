@@ -23,9 +23,10 @@ class Zabbix::Client
     def method_missing(method_name, *args, &block)
       validate_args(args)
 
-      method   = "#{@prefix}.#{method_name}"
-      params   = args[0] || []
-      options  = args[1] || {}
+      method  = "#{@prefix}.#{method_name}"
+      params  = args[0] || []
+      options = args[1] || {}
+
       response = query(method, params, options)
 
       if (error = response['error'])
@@ -100,10 +101,14 @@ class Zabbix::Client
         raise ArgumentError, "wrong number of arguments: #{args.inspect} (#{args.length} for 0..2)"
       end
 
-      args.each do |arg|
-        unless arg.kind_of?(Hash) or arg.kind_of?(Array)
-          raise TypeError, "wrong argument: #{arg.inspect} (expected Hash or Array)"
-        end
+      params, options = args.values_at(0, 1)
+
+      unless params.nil? or params.kind_of?(Hash) or params.kind_of?(Array)
+        raise TypeError, "wrong argument: #{params.inspect} (expected Hash or Array)"
+      end
+
+      unless options.nil? or options.kind_of?(Hash)
+        raise TypeError, "wrong argument: #{options.inspect} (expected Hash)"
       end
     end
   end # Method
