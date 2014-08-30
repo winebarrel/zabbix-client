@@ -2,7 +2,9 @@ class Zabbix::Client
   class Method
     JSON_RPC_VERSION = '2.0'
     JSON_RPC_REQUEST_ID = 1
+
     LOGIN_METHOD = 'user.login'
+    LOGOUT_METHOD = 'user.logout'
 
     DEFAULT_HEADERS = {
       'Content-Type' => 'application/json-rpc'
@@ -28,8 +30,11 @@ class Zabbix::Client
 
       result = response['result']
 
-      if method == LOGIN_METHOD
+      case method
+      when LOGIN_METHOD
         @client.auth = result
+      when LOGOUT_METHOD
+        @client.auth = nil
       end
 
       if block
