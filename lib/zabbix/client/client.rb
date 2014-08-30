@@ -6,6 +6,11 @@ class Zabbix::Client
     LOGIN_METHOD = 'user.login'
     LOGOUT_METHOD = 'user.logout'
 
+    UNAUTHENTICATED_METHODS = [
+      'user.login',
+      'apiinfo.version',
+    ]
+
     DEFAULT_HEADERS = {
       'Content-Type' => 'application/json-rpc'
     }
@@ -54,7 +59,10 @@ class Zabbix::Client
         :id      => JSON_RPC_REQUEST_ID,
       }.merge(options)
 
-      body[:auth] = @client.auth if @client.auth
+      if @client.auth and not UNAUTHENTICATED_METHODS.include?(method)
+        body[:auth] = @client.auth
+      end
+
       body = JSON.dump(body)
 
       proxy_user = @client.options[:proxy_user]
