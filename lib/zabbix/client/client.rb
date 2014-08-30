@@ -70,6 +70,14 @@ class Zabbix::Client
         headers = DEFAULT_HEADERS.merge(@client.options[:headers] || {})
         request = Net::HTTP::Post.new(@client.url.path, headers)
         request.body = body
+
+        basic_auth_user = @client.options[:basic_auth_user]
+        basic_auth_password = @client.options[:basic_auth_password]
+
+        if basic_auth_user and basic_auth_password
+          request.basic_auth(basic_auth_user, basic_auth_password)
+        end
+
         response = h.request(request)
         JSON.parse(response.body)
       end
