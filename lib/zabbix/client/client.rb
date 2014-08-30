@@ -101,8 +101,8 @@ class Zabbix::Client
       end
 
       args.each do |arg|
-        unless arg.kind_of?(Hash)
-          raise TypeError, "wrong argument: #{arg.inspect} (expected Hash)"
+        unless arg.kind_of?(Hash) or arg.kind_of?(Array)
+          raise TypeError, "wrong argument: #{arg.inspect} (expected Hash or Array)"
         end
       end
     end

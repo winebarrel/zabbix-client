@@ -39,6 +39,9 @@ p client.template.getobjects(host: ['Template OS Linux'])
 #     "proxy_hostid"=>"0",
 #     "host"=>"Template OS Linux",
 #     ...
+
+# https://www.zabbix.com/documentation/2.0/manual/appendix/api/hostgroup/delete
+client.hostgroup.delete([9, 10])
 ```
 
 ### Use proxy
