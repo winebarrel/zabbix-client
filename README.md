@@ -2,6 +2,8 @@
 
 This is a simple client of Zabbix API.
 
+[![Gem Version](https://badge.fury.io/rb/zabbix-client.svg)](http://badge.fury.io/rb/zabbix-client)
+
 ## Installation
 
 Add this line to your application's Gemfile:
