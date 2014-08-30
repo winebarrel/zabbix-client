@@ -22,6 +22,10 @@ Or install it yourself as:
 
 ## Usage
 
+Method call is a thin wrapper of the JSON-RPC.
+
+JSON is created dynamically, it is checked on the server side.
+
 ```ruby
 require 'zabbix/client'
 
