@@ -53,7 +53,7 @@ client.hostgroup.delete([9, 10])
 ```ruby
 Zabbix::Client.new(
   'http://localhost/zabbix/api_jsonrpc.php',
-  proxy_user: 'username', proxy_password: 'password'
+  proxy_host: 'hostname', proxy_port: 8080
 )
 ```
 
