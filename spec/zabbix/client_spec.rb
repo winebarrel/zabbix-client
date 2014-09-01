@@ -44,6 +44,19 @@ describe Zabbix::Client do
   context "when error happen" do
     it do
       handler = proc do |req, res|
+        res.status = 500
+        res.body = JSON.dump(:error => {:code => -1, :message => 'Any Error'})
+      end
+
+      run_client(:handler => handler) do |client|
+        expect {
+          client.item.get(:itemids => [1, 2, 3])
+        }.to raise_error(Zabbix::Client::Error, '{"code"=>-1, "message"=>"Any Error", "method"=>"item.get", "params"=>{:itemids=>[1, 2, 3]}}')
+      end
+    end
+
+    it do
+      handler = proc do |req, res|
         res.status = 404
         res.body = 'Not Found'
       end
