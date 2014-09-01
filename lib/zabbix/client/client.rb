@@ -81,7 +81,9 @@ class Zabbix::Client
 
       http.start do |h|
         headers = DEFAULT_HEADERS.merge(options[:headers] || {})
-        request = Net::HTTP::Post.new(@client.url.path, headers)
+        path = @client.url.path
+        path = '/' if path.empty?
+        request = Net::HTTP::Post.new(path, headers)
         request.body = body
 
         basic_auth_user = options[:basic_auth_user]
@@ -98,7 +100,7 @@ class Zabbix::Client
         rescue JSON::ParserError
           response.value
           # Throw the following exception if no exception is thrown
-          raise response.code + ' ' + response.message.dump
+          raise [response.code, response.message.dump, response.body].join(' ')
         end
       end
     end
