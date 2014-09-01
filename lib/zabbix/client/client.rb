@@ -92,7 +92,14 @@ class Zabbix::Client
         end
 
         response = h.request(request)
-        JSON.parse(response.body)
+
+        begin
+          JSON.parse(response.body)
+        rescue JSON::ParserError
+          response.value
+          # Throw the following exception if no exception is thrown
+          raise response.code + ' ' + response.message.dump
+        end
       end
     end
 
