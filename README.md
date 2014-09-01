@@ -3,6 +3,7 @@
 This is a simple client of Zabbix API.
 
 [![Gem Version](https://badge.fury.io/rb/zabbix-client.svg)](http://badge.fury.io/rb/zabbix-client)
+[![Build Status](https://travis-ci.org/winebarrel/zabbix-client.svg?branch=master)](https://travis-ci.org/winebarrel/zabbix-client)
 
 ## Installation
 
