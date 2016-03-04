@@ -1,0 +1,72 @@
+#!/usr/bin/env ruby
+$: << File.expand_path('../../lib', __FILE__)
+require 'zabbix/client'
+require 'optparse'
+
+Version = Zabbix::Client::VERSION
+
+def parse_user!(str, options)
+  user, pass = str.split(':', 2)
+  options[:user] = user
+  options[:password] = pass
+end
+
+options = {
+  url: ENV['ZABBIX_URL'],
+  options: {}
+}
+
+if ENV['ZABBIX_OPTIONS']
+  options[:options] = JSON.parse(ENV['ZABBIX_OPTIONS'])
+end
+
+if ENV['ZABBIX_USER']
+  parse_user!(ENV['ZABBIX_USER'], options)
+end
+
+ARGV.options do |opt|
+  begin
+    opt.on('-u', '--url URL')        {|v| options[:url]     = v             }
+    opt.on('-o', '--options JSON')   {|v| options[:options] = JSON.parse(v) }
+    opt.on('-e', '--execute API')    {|v| options[:execute] = v             }
+    opt.on(''  , '--user USER:PASS') {|v| parse_user!(v, options)           }
+
+    opt.on('-h', '--help') do
+      puts opt.help
+      exit 1
+    end
+
+    opt.parse!
+
+    unless options[:url] and options[:execute]
+      puts opt.help
+      exit 1
+    end
+  rescue => e
+    $stderr.puts("[ERROR] #{e.message}")
+    exit 1
+  end
+end
+
+begin
+  client = Zabbix::Client.new(options[:url], options[:options])
+
+  if options[:user] and options[:password]
+    client.user.login(user: options[:user], password: options[:password])
+  end
+
+  result = client.instance_eval(options[:execute])
+
+  if result.is_a?(Hash) or result.is_a?(Array)
+    puts JSON.pretty_generate(result)
+  else
+    puts result
+  end
+rescue => e
+  if options[:options]['debug']
+    raise e
+  else
+    $stderr.puts("[ERROR] #{e.message}")
+    exit 1
+  end
+end

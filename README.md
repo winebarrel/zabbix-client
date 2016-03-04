@@ -76,6 +76,52 @@ Zabbix::Client.new(
 )
 ```
 
+## CLI
+
+```sh
+$ export ZABBIX_URL=http://localhost/zabbix/api_jsonrpc.php
+$ export ZABBIX_USER=Admin:zabbix
+$ zabbix-cli -e apiinfo.version
+2.4.6
+$ zabbix-cli -e 'template.getobjects(host: ["Template OS Linux"])'
+[
+  {
+    "proxy_hostid": "0",
+    "host": "Template OS Linux",
+    "status": "3",
+    "disable_until": "0",
+    "error": "",
+    "available": "0",
+    "errors_from": "0",
+    "lastaccess": "0",
+    "ipmi_authtype": "0",
+    "ipmi_privilege": "2",
+    "ipmi_username": "",
+    "ipmi_password": "",
+    "ipmi_disable_until": "0",
+    "ipmi_available": "0",
+    "snmp_disable_until": "0",
+    "snmp_available": "0",
+    "maintenanceid": "0",
+    "maintenance_status": "0",
+    "maintenance_type": "0",
+    "maintenance_from": "0",
+    "ipmi_errors_from": "0",
+    "snmp_errors_from": "0",
+    "ipmi_error": "",
+    "snmp_error": "",
+    "jmx_disable_until": "0",
+    "jmx_available": "0",
+    "jmx_errors_from": "0",
+    "jmx_error": "",
+    "name": "Template OS Linux",
+    "flags": "0",
+    "templateid": "10001",
+    "description": ""
+  }
+]
+```
+
 ## Related links
 
 * [Zabbix 1.8 API reference](https://www.zabbix.com/documentation/1.8/api)
